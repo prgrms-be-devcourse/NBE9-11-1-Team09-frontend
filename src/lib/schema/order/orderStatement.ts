@@ -1,19 +1,19 @@
 import { z } from 'zod';
-import { orderItemResSchema } from './orderItem';
+import { orderItemReqSchema, orderItemResSchema } from './orderItem';
 
 export const orderStatementReqSchema = z.object({
-    id: z.number().int().positive(),
-    address : z.string().min(1, "주소는 한 글자 이상이여야 합니다."),
+    address: z.string().min(1, "주소는 한 글자 이상이여야 합니다."),
     zipCode: z.string()
-    .length(5, "우편번호는 5 자리 숫자여야 합니다.")
-    .regex(/^\d{5}$/, "숫자만 입력 가능합니다.")
+        .length(5, "우편번호는 5 자리 숫자여야 합니다.")
+        .regex(/^\d{5}$/, "숫자만 입력 가능합니다."),
+    orderItems: z.array(orderItemReqSchema)
 });
 
 export const orderStatementResSchema = z.object({
     id: z.number().int().positive(),
-    address : z.string().min(1, "주소는 한 글자 이상이여야 합니다."),
+    address: z.string().min(1, "주소는 한 글자 이상이여야 합니다."),
     zipCode: z.string(),
-    orderItem: z.array(orderItemResSchema)
+    orderItems: z.array(orderItemResSchema)
 });
 
 export type OrderStatementReq = z.infer<typeof orderStatementReqSchema>;
