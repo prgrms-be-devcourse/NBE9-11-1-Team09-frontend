@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { orderStatementReqSchema, orderStatementResSchema } from './orderStatement';
 import { ApiResponseSchema } from '../common';
+import { OrderActionResponse } from '../action';
 
 export const orderCreateReqSchema = z.object({
     email: z.email(),
@@ -28,3 +29,7 @@ export type OrderCreateRes = z.infer<typeof orderCreateResSchema>;
 export type OrderQueryRes = z.infer<typeof orderQueryResSchema>;
 export type OrderUpdateReq = z.infer<typeof orderUpdateReqSchema>;
 export type OrderUpdateRes = z.infer<typeof orderUpdateResSchema>;
+
+export type OrderCreateState = OrderActionResponse<OrderCreateRes>;
+export type OrderUpdateState = OrderActionResponse<OrderUpdateRes>;
+export type OrderDeleteState = OrderActionResponse<undefined>;
