@@ -4,7 +4,7 @@ import { ApiResponseSchema } from '../common';
 
 export const orderCreateReqSchema = z.object({
     email: z.email(),
-    orderStatements: z.array(orderStatementReqSchema)
+    orderStatement: orderStatementReqSchema
 });
 
 export const orderCreateResSchema = ApiResponseSchema(z.object({

@@ -2,8 +2,7 @@ import { z } from 'zod';
 import { productItemSchema } from '../product';
 
 export const orderItemReqSchema = z.object({
-    id: z.number().int().positive(),
-    productId : z.number().int().positive(),
+    productId: z.number().int().positive(),
     quantity: z.number().int().positive(),
 });
 
