@@ -130,8 +130,8 @@ export async function updateOrder(id: number, input: OrderUpdateReq) {
     }
 }
 
-export async function deleteOrder(id: number) {
-    const res = await fetch(`${API_URL}/order/${id}`, {
+export async function deleteOrder(orderId: number, orderStatementId: number) {
+    const res = await fetch(`${API_URL}/order/${orderId}/statement/${orderStatementId}`, {
         method: 'DELETE',
     });
 

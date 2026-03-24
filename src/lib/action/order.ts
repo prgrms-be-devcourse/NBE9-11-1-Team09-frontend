@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { OrderCreateReq, OrderCreateState, OrderDeleteState, OrderUpdateReq, OrderUpdateState } from "../schema/order/order";
 import { createOrder, deleteOrder, updateOrder } from "../service/order";
 import { redirect } from "next/navigation";
-import { success } from "zod";
 
 export async function createOrderAction(prevState: OrderCreateState, formData: FormData) {
     const email = formData.get('email') as string;
@@ -112,9 +111,12 @@ export async function updateOrderAction(id: number, prevState: OrderUpdateState,
     redirect(`/order/${id}`);
 }
 
-export async function deleteOrderAction(id: number, prevState: OrderDeleteState) {
+export async function deleteOrderAction(
+    orderId: number, 
+    orderStatementId: number, 
+    prevState: OrderDeleteState) {
     try {
-        await deleteOrder(id);
+        await deleteOrder(orderId, orderStatementId);
     } catch (error) {
         return {
             ...prevState,
@@ -122,7 +124,7 @@ export async function deleteOrderAction(id: number, prevState: OrderDeleteState)
             error: error instanceof Error ? error.message : "삭제 중 오류가 발생했습니다.",
         }
     }
-    revalidatePath("/order");
-    revalidatePath(`/order/${id}`);
-    redirect("/order");
+    revalidatePath("/orders");
+    revalidatePath(`/orders/${orderId}`);
+    redirect("/orders");
 }
