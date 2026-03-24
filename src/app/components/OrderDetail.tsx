@@ -3,6 +3,7 @@
 import { OrderQueryRes } from '@/lib/schema/order/order';
 import { getProductImageSrc } from '@/lib/util/image-load';
 import Image from 'next/image';
+import DeleteOrderStatementButton from './DeleteOrderStatementButton';
 
 interface Props {
     order: OrderQueryRes;
@@ -20,7 +21,14 @@ export default function OrderDetail({ order }: Props) {
                 <h1 className="text-2xl font-bold">주문 #{order.id} 상세</h1>
 
                 {order.orderStatements.map((statement) => (
-                    <div key={statement.id} className="border rounded-lg p-4 bg-white">
+                    <div key={statement.id} className="border rounded-lg p-4 bg-white relative">
+                        <div className="absolute top-3 right-3">
+                            <DeleteOrderStatementButton
+                                orderId={order.id}
+                                orderStatementId={statement.id}
+                            />
+                        </div>
+                        
                         <div className="mb-4 pb-4 border-b">
                             <p className="text-sm text-gray-600">
                                 <span className="font-medium">배송지:</span> {statement.address}
