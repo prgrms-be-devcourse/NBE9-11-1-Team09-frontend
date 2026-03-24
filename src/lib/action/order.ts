@@ -26,7 +26,7 @@ export async function createOrderAction(prevState: OrderCreateState, formData: F
 
     const input = {
         email,
-        orderStatement: {
+        orderStatements: {
             address,
             zipCode,
             orderItems
@@ -53,8 +53,8 @@ export async function createOrderAction(prevState: OrderCreateState, formData: F
         }
     }
 
-    revalidatePath('/order');
-    redirect(`/order/${result.data!.orderId}`);
+    revalidatePath('/orders');
+    redirect(`/orders/${result.data!.orderId}`);
 }
 
 export async function updateOrderAction(id: number, prevState: OrderUpdateState, formData: FormData) {
@@ -78,7 +78,7 @@ export async function updateOrderAction(id: number, prevState: OrderUpdateState,
 
     const input = {
         email,
-        orderStatement: {
+        orderStatements: {
             address,
             zipCode,
             orderItems

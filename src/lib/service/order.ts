@@ -69,6 +69,10 @@ export async function createOrder(input: OrderCreateReq) {
 
         const response = await res.json();
 
+        if (!res.ok) {
+            throw new Error(response.message || `Failed to create order: ${res.status}`);
+        }
+
         const apiResponse = orderCreateResSchema.parse(response);
         if (!apiResponse.success) {
             throw new Error(apiResponse.message);
