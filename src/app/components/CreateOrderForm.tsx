@@ -1,8 +1,14 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useRef } from 'react';
 import { createOrderAction } from '@/lib/action/order';
 import { OrderCreateState } from '@/lib/schema/order/order';
+import ProductSelector from './ProductSelector';
+import { ProductItem } from '@/lib/schema/product';
+
+interface Props {
+  initialProducts: ProductItem[];
+}
 
 const initialState: OrderCreateState = {
   success: false,
@@ -10,17 +16,39 @@ const initialState: OrderCreateState = {
   fieldErrors: undefined,
 };
 
-export default function CreateOrderForm() {
+export default function CreateOrderForm({ initialProducts }: Props) {
   const [state, formAction, isPending] = useActionState(
     createOrderAction,
     initialState
   );
 
+  const selectedItemsRef = useRef<Array<{ productId: number; quantity: number }>>([]);
+
+  const handleSelectedItemsChange = (items: Array<{ productId: number; quantity: number }>) => {
+    selectedItemsRef.current = items;
+  };
+
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    if (selectedItemsRef.current.length === 0) {
+      e.preventDefault();
+      alert('최소 하나 이상의 제품을 선택해주세요');
+      return;
+    }
+    const hiddenInput = document.querySelector('input[name="orderItems"]') as HTMLInputElement;
+    if (hiddenInput) {
+      hiddenInput.value = JSON.stringify(selectedItemsRef.current);
+    }
+  };
+
   return (
     <main className="container mx-auto px-4 py-8 max-w-2xl">
       <h1 className="text-2xl font-bold mb-6">새 주문 만들기</h1>
 
-      <form action={formAction} className="space-y-6 bg-white p-6 rounded-lg shadow">
+      <form 
+        action={formAction} 
+        onSubmit={handleSubmit}
+        className="space-y-6 bg-white p-6 rounded-lg shadow"
+      >
         {/* 이메일 */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium mb-1">
@@ -77,15 +105,18 @@ export default function CreateOrderForm() {
           )}
         </div>
 
-        {/* 주문 상품 (숨김 필드로 전달) */}
-        {/* 실제 구현에서는 상품 선택 UI 가 필요하며, 선택된 결과를 JSON 으로 변환하여 저장 */}
-        <input
-          type="hidden"
-          name="orderItems"
-          defaultValue={JSON.stringify([
-            { productId: 1, quantity: 1 } // 예시 데이터 (실제론 상품 선택 UI 필요)
-          ])}
-        />
+        {/* ✅ 제품 선택 컴포넌트 */}
+        <div className="border-t pt-6">
+          <ProductSelector 
+            initialProducts={initialProducts}
+            onSelectedItemsChange={handleSelectedItemsChange}
+          />
+          {state.fieldErrors?.orderItems && (
+            <p className="text-red-500 text-sm mt-2">{state.fieldErrors.orderItems}</p>
+          )}
+        </div>
+
+        <input type="hidden" name="orderItems" defaultValue={JSON.stringify([])} />
 
         {/* 전체 에러 메시지 */}
         {state.error && !state.fieldErrors && (

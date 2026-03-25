@@ -24,6 +24,32 @@ export async function createOrderAction(prevState: OrderCreateState, formData: F
         };
     }
 
+    if (!orderItems || orderItems.length === 0) {
+        return {
+            ...prevState,
+            success: false,
+            error: '주문할 제품을 선택해주세요',
+            fieldErrors: { orderItems: '최소 하나 이상의 제품을 선택해야 합니다' }
+        };
+    }
+
+    for (const item of orderItems) {
+        if (!item.productId || item.productId <= 0) {
+            return {
+                ...prevState,
+                success: false,
+                error: '유효하지 않은 상품 ID 가 포함되었습니다',
+            };
+        }
+        if (!item.quantity || item.quantity <= 0) {
+            return {
+                ...prevState,
+                success: false,
+                error: '상품 수량은 1 개 이상이어야 합니다',
+            };
+        }
+    }
+
     const input = {
         email,
         orderStatements: {
@@ -112,8 +138,8 @@ export async function updateOrderAction(id: number, prevState: OrderUpdateState,
 }
 
 export async function deleteOrderAction(
-    orderId: number, 
-    orderStatementId: number, 
+    orderId: number,
+    orderStatementId: number,
     prevState: OrderDeleteState) {
     try {
         await deleteOrder(orderId, orderStatementId);
