@@ -7,4 +7,9 @@ export const productItemSchema = z.object({
     imageSeq: z.number().int().positive()
 });
 
+export const productListSchema = z.object({
+    items: z.array(productItemSchema)
+})
+
 export type ProductItem = z.infer<typeof productItemSchema>;
+export type ProductList = z.infer<typeof productListSchema>;
