@@ -31,14 +31,14 @@ export default function OrderDetail({ order }: Props) {
                             >
                                 수정
                             </Link>
-                            
+
                             {/* 기존 삭제 버튼 */}
                             <DeleteOrderStatementButton
                                 orderId={order.id}
                                 orderStatementId={statement.id}
                             />
                         </div>
-                        
+
                         <div className="mb-4 pb-4 border-b">
                             <p className="text-sm text-gray-600">
                                 <span className="font-medium">배송지:</span> {statement.address}
@@ -82,6 +82,14 @@ export default function OrderDetail({ order }: Props) {
                         </div>
                     </div>
                 ))}
+                <div className="pt-4 border-t">
+                    <Link
+                        href="/orders"
+                        className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition"
+                    >
+                        ← 주문 목록으로 돌아가기
+                    </Link>
+                </div>
             </div>
 
             <aside className="lg:col-span-1">
