@@ -87,7 +87,7 @@ export async function createOrder(input: OrderCreateReq) {
     }
 }
 
-export async function updateOrder(id: number, input: OrderUpdateReq) {
+export async function updateOrder(orderId: number, orderStatementId: number, input: OrderUpdateReq) {
     const validated = orderUpdateReqSchema.safeParse(input);
 
     if (!validated.success) {
@@ -107,24 +107,22 @@ export async function updateOrder(id: number, input: OrderUpdateReq) {
     }
 
     try {
-        const res = await fetch(`${API_URL}/order/${id}`, {
+        const res = await fetch(`${API_URL}/order/${orderId}/statement/${orderStatementId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(validated.data)
         });
 
         if (!res.ok) {
-            throw new Error(`Failed to update order: ${res.status}`);
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.message || `Failed to update order: ${res.status}`);
         }
 
         const response = await res.json();
 
-        const apiResponse = orderCreateResSchema.parse(response);
-
-        if (!apiResponse.success) {
-            throw new Error(apiResponse.message);
-        }
-        return { success: true, data: apiResponse.data };
+        const apiResponse = orderUpdateResSchema.parse(response);
+        
+        return { success: true, data: apiResponse };
 
     } catch (error) {
         return {

@@ -84,7 +84,11 @@ export async function createOrderAction(prevState: OrderCreateState, formData: F
     redirect(`/orders/${result.data!.orderId}`);
 }
 
-export async function updateOrderAction(id: number, prevState: OrderUpdateState, formData: FormData) {
+export async function updateOrderAction(
+    orderId: number,
+    orderStatementId: number,
+    prevState: OrderUpdateState,
+    formData: FormData) {
     const email = formData.get('email') as string;
     const address = formData.get('address') as string;
     const zipCode = formData.get('zipCode') as string;
@@ -103,9 +107,14 @@ export async function updateOrderAction(id: number, prevState: OrderUpdateState,
         };
     }
 
+    for (const item of orderItems) {
+        if (!item.productId || item.productId <= 0) return { ...prevState, success: false, error: '유효하지 않은 상품 ID 가 포함되었습니다' };
+        if (!item.quantity || item.quantity <= 0) return { ...prevState, success: false, error: '상품 수량은 1 개 이상이어야 합니다' };
+    }
+
     const input = {
         email,
-        orderStatements: {
+        orderStatement: {
             address,
             zipCode,
             orderItems
@@ -115,13 +124,13 @@ export async function updateOrderAction(id: number, prevState: OrderUpdateState,
     let result;
 
     try {
-        result = await updateOrder(id, input);
+        result = await updateOrder(orderId, orderStatementId, input);
 
         if (!result.success) {
             return {
                 ...prevState,
                 error: result.error,
-                fieldErrors: result.fieldErrors,
+                fieldErrors: result.fieldErrors ?? {},
                 success: false
             };
         }
@@ -133,9 +142,9 @@ export async function updateOrderAction(id: number, prevState: OrderUpdateState,
         };
     }
 
-    revalidatePath('/order');
-    revalidatePath(`/order/${id}`);
-    redirect(`/order/${id}`);
+    revalidatePath('/orders');
+    revalidatePath(`/orders/${orderId}`);
+    redirect(`/orders/${orderId}`);
 }
 
 export async function deleteOrderAction(

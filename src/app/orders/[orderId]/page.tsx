@@ -5,19 +5,19 @@ import { getOrder } from '@/lib/service/order';
 import { notFound } from 'next/navigation';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ orderId: string }>;
 }
 
 export default async function OrderDetailPage({ params }: Props) {
-  const { id } = await params;
-  const orderId = parseInt(id, 10);
+  const { orderId } = await params;
+  const orderIdNum = parseInt(orderId, 10);
   
-  if (isNaN(orderId)) {
+  if (isNaN(orderIdNum)) {
     notFound();
   }
 
   try {
-    const order = await getOrder(orderId);
+    const order = await getOrder(orderIdNum);
     
     return (
       <main className="container mx-auto px-4 py-8">

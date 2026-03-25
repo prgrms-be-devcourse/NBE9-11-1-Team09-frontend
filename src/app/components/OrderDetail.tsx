@@ -4,6 +4,7 @@ import { OrderQueryRes } from '@/lib/schema/order/order';
 import { getProductImageSrc } from '@/lib/util/image-load';
 import Image from 'next/image';
 import DeleteOrderStatementButton from './DeleteOrderStatementButton';
+import Link from 'next/link';
 
 interface Props {
     order: OrderQueryRes;
@@ -22,7 +23,16 @@ export default function OrderDetail({ order }: Props) {
 
                 {order.orderStatements.map((statement) => (
                     <div key={statement.id} className="border rounded-lg p-4 bg-white relative">
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 right-3 flex gap-2">
+                            {/* 수정 버튼 */}
+                            <Link
+                                href={`/orders/${order.id}/statements/${statement.id}/edit`}
+                                className="px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition border border-blue-200"
+                            >
+                                수정
+                            </Link>
+                            
+                            {/* 기존 삭제 버튼 */}
                             <DeleteOrderStatementButton
                                 orderId={order.id}
                                 orderStatementId={statement.id}
