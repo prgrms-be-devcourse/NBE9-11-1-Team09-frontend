@@ -80,6 +80,7 @@ export async function createOrderAction(prevState: OrderCreateState, formData: F
     }
 
     revalidatePath('/orders');
+    revalidatePath(`/orders/${result.data!.orderId}`);
     redirect(`/orders/${result.data!.orderId}`);
 }
 
