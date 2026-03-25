@@ -5,7 +5,7 @@ import { OrderActionResponse } from '../action';
 
 export const orderCreateReqSchema = z.object({
     email: z.email(),
-    orderStatement: orderStatementReqSchema
+    orderStatements: orderStatementReqSchema
 });
 
 export const orderCreateResSchema = ApiResponseSchema(z.object({
